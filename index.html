@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videollamada con Traducción</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <h1>Videollamada con Traducción</h1>
+    <div id="room-container">
+        <input id="room-id" type="text" placeholder="ID de la sala">
+        <button id="create-room-btn" onclick="createRoom()">Crear Sala</button>
+        <button id="join-room-btn" onclick="joinRoom()">Unirse a Sala</button>
+        <div id="share-link-container" style="display: none; margin-top: 15px;">
+            <input id="share-link" type="text" readonly style="width: 70%; padding: 10px; border: 2px solid #2a5298; border-radius: 5px;">
+            <button id="copy-link-btn" onclick="copyRoomLink()">📋 Copiar Enlace</button>
+        </div>
+    </div>
+    <div id="video-container">
+        <video id="local-video" autoplay playsinline muted></video>
+        <video id="remote-video" autoplay playsinline></video>
+    </div>
+    <div id="voice-translation-container">
+        <div id="voice-controls">
+            <button id="start-voice-btn" onclick="startVoiceTranslation()">🎤 Iniciar Traducción de Voz</button>
+            <button id="stop-voice-btn" onclick="stopVoiceTranslation()" disabled>⏹️ Detener Traducción</button>
+        </div>
+        <div id="language-settings">
+            <label>Mi idioma:</label>
+            <select id="my-language">
+                <option value="es-ES">🇪🇸 Español</option>
+                <option value="ru-RU">🇷🇺 Русский</option>
+            </select>
+            <label>Traducir a:</label>
+            <select id="target-language">
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="es">🇪🇸 Español</option>
+            </select>
+        </div>
+        <div id="voice-status">Estado: Desconectado</div>
+        <div id="speech-preview">Esperando...</div>
+    </div>
+    <div id="chat-container">
+        <div id="chat-messages"></div>
+        <div id="chat-input-container">
+            <input id="chat-input" type="text" placeholder="Escribe un mensaje">
+            <select id="language-select">
+                <option value="es">🇪🇸 Español</option>
+                <option value="ru">🇷🇺 Русский</option>
+            </select>
+            <button id="send-message-btn" onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="./client.js"></script>
+</body>
+</html>
