@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Traducción LibreTranslate</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        #result { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h2>🧪 Test de Traducción LibreTranslate (Fedilab)</h2>
+    <div>
+        <input id="textInput" type="text" placeholder="Escribe algo en español" value="Hola mundo" style="width: 300px; padding: 10px;">
+        <br>
+        <button onclick="testTranslation()">Traducir Español → Ruso</button>
+        <button onclick="testReverseTranslation()">Traducir Ruso → Español</button>
+    </div>
+    <div id="result">Resultado aparecerá aquí...</div>
+    <script>
+        async function testTranslation() {
+            const text = document.getElementById('textInput').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Traduciendo...';
+            try {
+                console.log('Enviando petición de traducción...');
+                const response = await fetch('https://translate.fedilab.app/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        q: text,
+                        source: 'es',
+                        target: 'ru',
+                        format: 'text'
+                    })
+                });
+                console.log('Respuesta recibida:', response.status);
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Datos:', data);
+                resultDiv.innerHTML = `
+                    <strong>Original (Español):</strong> ${text}<br>
+                    <strong>Traducido (Ruso):</strong> ${data.translatedText || 'Error en traducción'}<br>
+                    <strong>Estado:</strong> ✅ Éxito
+                `;
+            } catch (error) {
+                console.error('Error en traducción:', error);
+                resultDiv.innerHTML = `
+                    <strong>❌ Error:</strong> ${error.message}<br>
+                    <strong>Texto original:</strong> ${text}<br>
+                    <strong>Posibles causas:</strong><br>
+                    • Sin conexión a internet<br>
+                    • Servidor no disponible<br>
+                    • Límite de requests alcanzado
+                `;
+            }
+        }
+        async function testReverseTranslation() {
+            const russianText = 'Привет, мир!';
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Traduciendo ruso a español...';
+            try {
+                const response = await fetch('https://translate.fedilab.app/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        q: russianText,
+                        source: 'ru',
+                        target: 'es',
+                        format: 'text'
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <strong>Original (Ruso):</strong> ${russianText}<br>
+                    <strong>Traducido (Español):</strong> ${data.translatedText}<br>
+                    <strong>Estado:</strong> ✅ Éxito
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
